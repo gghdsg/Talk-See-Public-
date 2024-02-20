@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'ico/favicon.ico' %}"/>
+    <title>TalkSee</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body
+        {
+            overflow: hidden;
+        }
+        .header
+        {
+            border: 1px solid #000000;
+			border-radius: 4px;
+            background-color:#63D5E7;/*#00BFFF*/
+            display: flex;
+            align-items: center;
+            padding: 1.5vh;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 3vh;
+            font-weight: bold;
+        }
+        .content
+        {
+            display: flex;
+            width: 100%;
+            height: 97vh;
+        }
+        .left-content
+        {
+            width: 15%;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar
+        {
+            border: 1px solid #000000;
+			border-radius: 4px;
+            width: 100%;
+            background-color: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .options-container
+        {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 1vh;
+        }
+        .option
+        {
+            height: 2vh;
+            background-color: #F5F5F5;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #000000;
+			border-radius: 4px;
+            flex: 1;
+            font-size: 1.5vh;
+        }
+        .option.selected
+        {
+            background-color: #63D5E7;
+            color: white;
+        }
+        .input-container
+        {
+            width: 100%;
+            border: 1px solid #000000;
+			border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position:relative;
+        }
+        .input-container input[type="text"]
+        {
+            width: 100%;
+            height: 10vh;
+        }
+        .input-container .image-paste
+        {
+            width: 100%;
+            height: 20vh;
+            position: relative;
+            border: 1px solid #000000;
+			border-radius: 4px;
+        }
+        .input-container .image-paste button
+        {
+            width: 100%;
+            position: absolute;
+            background-color: #00BFFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .input-container .imagePreview img
+        {
+            width: 100%;
+            border: 1px solid #ccc;
+			border-radius: 4px;/* 添加边框样式 */
+        }
+        .custom-file-upload
+        { /*传输图片样式*/
+            border: 1px solid #ccc;
+			border-radius: 4px;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            background-color: #f8f8f8;
+        }
+        .image-upload-container
+        {
+            border: 1px solid #ccc;
+			border-radius: 4px;
+            min-height: 100px;
+            position: relative;
+            cursor: pointer;
+        }
+        .custom-file-upload:hover
+        {
+            background-color: #e8e8e8;
+        }
+
+        #file-upload
+        {
+            display: none;
+        }
+
+        .image-preview
+        {
+            width: 100%;
+            min-height: 100px;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .preview-image
+        {
+            max-width: 100%;
+            max-height: 300px;
+        }
+
+
+
+        .text-input
+        {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            display: block;
+		  white-space: normal;
+		  overflow: auto; /* 添加滚动条 */
+            resize: vertical; /* 允许垂直调整大小 */
+        }
+        .input-container .result-display
+        {
+            width: 100%;
+            height: 5vh;
+            background-color: #F5F5F5;
+
+            margin-bottom: 1vh;
+        }
+		
+		
+		.models-container{
+
+		    display: flex;
+            flex-direction: row;
+            margin-bottom: 1vh;
+			position: absolute;
+			top:35px;
+			right:10px;
+		
+		}
+		.model-switch
+		{
+            height: 2vh;
+			width:8vh;
+            background-color: #F5F5F5;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #000000;
+			border-radius: 4px;
+            flex: 1;
+            font-size: 1.5vh;
+        }
+        .model-switch.selectedmodel
+        {
+            background-color: #63D5E7;
+            color: white;
+        }
+		
+		.datasets-container{
+		
+		    display: flex;
+            flex-direction: row;
+            margin-bottom: 1vh;
+			position: absolute;
+			top:35px;
+			left:100px;
+		
+		}
+		.dataset-switch
+		{
+            height: 2vh;
+			width:6vh;
+            background-color: #F5F5F5;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid #000000;
+			border-radius: 4px;
+            flex: 1;
+            font-size: 1.5vh;
+        }
+        .dataset-switch.selectedDataset
+        {
+            background-color: #63D5E7;
+            color: white;
+        }
+		
+		
+        .buttons
+        {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .buttons button
+        {
+            width: 48%;
+            height: 3vh;
+            background-color: #63D5E7;
+            color: white;
+            border:1px solid white;
+            cursor: pointer;
+			transition: background-color 0.3s ease;
+        }
+		.buttons button:hover{
+          background-color:#00BFFF ;
+		}
+        .qa-container
+        {
+            border: 1px solid #000000;
+			border-radius: 4px;
+            height: 55vh;
+            padding: 1vh;
+            background-color: #F5F5F5;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+        }
+        .qa-container .question
+        {
+            margin-bottom: 0;
+            margin: 0;
+            padding: 0; /* 或者根据需要调整 */
+        }
+        .qa-container ul
+        {
+            margin-top: 0;
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .qa-container ul li
+        {
+            /*flex-basis: calc(50% - 10px);*/
+            /*margin: 5px;*/
+            /*margin-bottom: 1vh;*/
+        }
+        .qa-container ul li input[type="radio"]
+        {
+            display: inline-block;
+            width: auto;
+            padding:0px;
+            background-color: #f2f2f2;
+            border: none;
+            border-radius: 4px;
+            margin: 0;
+        }
+        .qa-container ul li input[type="radio"]:checked
+        {
+            background-color: #4CAF50;
+            color: white;
+        }
+		
+		
+		.qa-container .update-button
+        {
+            width: 5vw;
+            height: 3vh;
+			/*display: flex;/*///////*/
+			//flex-direction: row; /*///////*/*/
+            background-color:transparent;
+            color: black;
+            border: 1px solid #000;
+			border-radius: 4px;
+            cursor: pointer;
+            position:absolute;
+            left:4vh;
+            top:45vh;
+			opacity:0.5;
+			transition: background-color 0.3s ease, opacity 0.3s ease; /* 添加了 opacity 并修正了 transition 属性 */
+		}
+
+	.qa-container .update-button:hover {
+    background-color:aliceblue; /* 鼠标悬停时的颜色 */
+    opacity: 0.8; /* 鼠标悬停时改变透明度 */
+	}
+
+        .qa-container .submit-button
+        {
+            width: 5vw;
+            height: 3vh;
+			/*display: flex;/*///////*/
+			//flex-direction: row; /*///////*/*/
+            background-color:transparent;
+            color: black;
+            border: 1px solid #000;
+			border-radius: 4px;
+            cursor: pointer;
+            position:absolute;
+            left:14vh;
+            top:45vh;
+			opacity:0.5;
+			transition: background-color 0.3s ease, opacity 0.3s ease; /* 添加了 opacity 并修正了 transition 属性 */
+        }
+
+	.qa-container .submit-button:hover {
+    background-color: aliceblue; /* 鼠标悬停时的颜色 */
+    opacity: 0.8; /* 鼠标悬停时改变透明度  */
+	}
+		
+		
+		.submitSE-button
+        {
+            width: 3vw;
+            height: 3vh;
+		    margin:0 auto;
+		    text-align: center;
+            background-color:transparent;
+            color: black;
+            border: 1px solid #000;
+		    border-radius: 4px;
+            cursor: pointer;
+          /*position：absolute;
+            left:14vh;
+            top:30vh;*/
+			opacity:0.5;
+			transition: background-color 0.3s ease, opacity 0.3s ease; /* 添加了 opacity 并修正了 transition 属性 */
+        }
+
+	 .submitSE-button:hover {
+    background-color: aliceblue; /* 鼠标悬停时的颜色 */
+    opacity: 0.8; /* 鼠标悬停时改变透明度  */
+	}
+
+
+        .right-content
+        {
+            width: 85%;
+            display: flex;
+            flex-direction: column; /* 修改为垂直方向布局 */
+        }
+        .right-content .bottom
+        {
+            width: 100%;
+            height: 50%;
+            display: flex;
+            flex-direction: row; /* 修改为垂直方向布局 */
+        }
+        .right-content .bottom .image-container1
+        {
+            border: 1px solid #000000;
+            border-radius: 4px;
+            flex: 1;
+            width: 95%; /* 占据 100% 宽度 */
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1vh;
+            background-color: #F5F5F5;
+            overflow-y: auto;
+            margin-bottom: 1vh; /* 添加底部间距 */
+        }
+        .right-content .bottom .image-container1 img
+        {
+            width: 5vw;
+            height: 5vw;
+            /*            margin: 1vh;*/
+            background-color: #FFFFFF;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+        }
+        .right-content .bottom .image-container2
+        {
+            border: 1px solid #000000;
+            border-radius: 4px;
+            flex: 1;
+            width: 95%; /* 占据 100% 宽度 */
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1vh;
+            background-color: #F5F5F5;
+            overflow-y: auto;
+            margin-bottom: 1vh; /* 添加底部间距 */
+        }
+        .right-content .bottom .image-container2 img
+        {
+            width: 5vw;
+            height: 5vw;
+            /*            margin: 1vh;*/
+            background-color: #FFFFFF;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            margin-bottom:1vh;
+        }
+        .right-content .image-container
+        {
+            border: 1px solid #000000;
+            border-radius: 4px;
+            flex: 1;
+            width: 100%; /* 占据 100% 宽度 */
+            height: 50%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1vh;
+            background-color: #F5F5F5;
+            overflow-y: auto;
+            margin-bottom: 1vh; /* 添加底部间距 */
+            position: relative;
+        }
+        .right-content .image-container img
+        {
+            width: 5vw;
+            height: 5vw;
+            /*            margin: vh;*/
+            background-color: #FFFFFF;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            position: static;
+        }
+
+
+
+        .image-feedback-container
+        {
+            position: relative;
+            display: inline-block; /* 根据您的布局需求，可能需要调整 */
+        }
+        .feedback-icons
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            visibility: hidden; /* 默认隐藏 */
+        }
+        .icon
+        {
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .icon .checkmark, .icon .cross
+        {
+            margin: 0 10px;
+            font-size: 24px;
+        }
+        .icon .checkmark
+        {
+            color: green;
+        }
+        .icon .cross {
+            color: red;
+        }
+        .selected-image-container
+        {
+            margin-top: 20px;
+            border: 1px solid #CCCCCC;
+			border-radius: 4px;
+            padding: 10px;
+        }
+        .selected-image-container img
+        {
+            max-width: 100%;
+            height: auto;
+        }
+        .highlighted
+        {
+            border: 5px solid red; /* 红色边框 */
+            transform: scale(1.2); /* 轻微放大图片 */
+            transition: transform 0.3s, border 0.3s; /* 平滑过渡效果 */
+        }
+        .darken-filter
+        {
+            filter: brightness(50%);
+            transition: filter 0.1s ease; /* 平滑过渡效果 */
+        }
+        .question-container {
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-weight: bold;
+        }
+
+        .option {
+            margin-top: 5px;
+			display: flex;
+   			align-items: center;
+    		padding: 4px 8px; /* 调整内边距 */
+    		white-space: normal;
+    		height:auto;
+    		flex-grow: 1;
+        }
+      
+		.option input[type="radio"] {
+			margin-right: 2px; /* 调整间距 */
+			height: auto;
+			width:auto;
+		}
+
+
+		.option label {
+			display: block;
+			white-space: normal;
+			width: auto;white-space: normal;
+		}
+		
+         /* 
+          /*在底部第一个区域内为每张图片增加悬停按钮，可以进行反馈
+          .image-SEfeedback-container {
+              position: relative;
+          }
+
+          .SEfeedback-icon {
+              
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 
+              color: white;
+              justify-content: space-around; /* 分布图标 
+              align-items: center;
+              flex-direction: column;
+			  visibility: hidden；
+          }
+
+          .image-SEfeedback-container:hover .SEfeedback-icon {
+              display: flex; /* 悬停时显示 
+          }
+
+          .SEicon {
+              cursor: pointer;
+              padding: 5px 10px; /* 调整为所需的内边距 
+              border: 1px solid white; /* 可见边框 
+              border-radius: 5px; /* 圆角边框 
+              margin: 5px; /* 间距 
+          }
+
+          .SEicon .start-icon {
+              /* 仅为“Start”图标定义的样式 
+              background-color: green;
+              color: white;
+          }
+
+          .SEicon .end-icon {
+              /* 仅为“End”图标定义的样式 
+              background-color: red;
+              color: white;
+          }
+		.SEselected{
+		 filter:brightness(50%);	
+      }
+		*/
+		/*
+		 .SEfeedback-icons
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            visibility: hidden; /* 默认隐藏 
+        }
+        .SEicon
+        {
+            display: flex;
+            flex-direction: row;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .SEicon .SEcheckmark, .SEicon .SEcross
+        {
+            margin: 0 10px;
+            font-size: 24px;
+        }
+        .SEicon .SEcheckmark
+        {
+            color: green;
+        }
+        .SEicon .SEcross {
+            color: red;
+        }
+		*/
+    </style>
+
+
+
+</head>
+<body>
+<div class="header">
+    <span>TalkSee</span>
+	
+	<div class="models-container">
+		
+			<div class="model-switch" id="gpt_0" onclick="selectModel('gpt_0')">GPT4_0</div>
+    		<div class="model-switch" id="gpt_1" onclick="selectModel('gpt_1')">GPT4_1</div>
+		    <div class="model-switch" id="qwen-turbo" onclick="selectModel('qwen-turbo')">千问turbo</div>
+		    <div class="model-switch" id="qwen-max" onclick="selectModel('qwen-max')">千问max</div>
+		
+			
+		</div>
+	<div class="datasets-container">
+		
+			<div class="dataset-switch" id="V3C" onclick="selectDataset('V3C')">V3C</div>
+    		<div class="dataset-switch" id="marine" onclick="selectDataset('marine')">Marine</div>
+			<div class="dataset-switch" id="LHE" onclick="selectDataset('LHE')">LHE</div>
+		</div>
+	
+</div>
+<div class="content">
+    <div class="left-content">
+        <div class="options-container">
+            <div class="option" onclick="selectOption('AVS')">AVS</div>
+            <div class="option" onclick="selectOption('KIS')">KIS</div>
+            <div class="option" onclick="selectOption('VQA')">VQA</div>
+        </div>
+		
+        <div class="input-container">
+            <form id="myForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-text-container">
+                    <textarea  name="text" placeholder="Enter text" class="text-input" id="text" >
+</textarea>
+                </div>
+                <input type="hidden" name="task" id="task">
+				<input type="hidden" id="models" value="">
+				<input type="hidden" id="datasets" value="">
+				
+                <div class="image-upload-container" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+                    <label for="file-upload" class="custom-file-upload">
+                        img select
+                    </label>
+                    <input id="file-upload" type="file" name="file"  onchange="previewImage(event)"/>
+                    <div id="imagePreview" class="image-preview">
+                    	{% if uploaded_file %}
+				    		<img class="preview-image" src="{{uploaded_file}}" alt="Uploaded Image">
+				 	{% endif %}
+                    </div>
+                </div>
+                <div class="result-display">{{VQA_answer}}</div>
+                <button type="button" name="action" value="submitconfirm" id="submitconfirm">Confirm</button>
+                <input type="hidden" id="userInput" name="userInput" value="">
+                <div class="buttons">
+
+                    <button type="button" name="action" value="search" id="search">Search</button>
+                    <button type="button" name="action" value="rerank" id="rerank">Rerank</button>
+                    <button type="button" name="action" value="clear" id="clear">Clear</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="qa-container">
+            <div class="qa-container" id = "qa_container">
+                <div id="loading_gpt" style="display: none;">正在加载...</div>
+                </div>
+            <button class="update-button" type="button" name="action" value="update" id="update">Update</button>
+            <button class="submit-button" type="button" name="action" value="submit" id="submit">Submit</button>
+        </div>
+    </div>
+    <div class="right-content">
+        <div class="image-container top-container">
+            <form id="backForm" method="POST" action="{% url 'home' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" id="selectedImagePath" name="selectedImagePath">
+                <input type="hidden" id="iconType" name="iconType">
+                <div class="scroll-container">
+                    <div class="image-container no-images" id = "images_container">
+                        <div id="loading" style="display: none;">正在加载...</div>
+                    </div>
+					
+                </div>
+            </form>
+        </div>
+        <div class="bottom">
+			
+            <div class="scroll-container">
+				<button type="button" name="action" value="cut" id="cutButton" class="submitSE-button">Cut</button>
+				<button type="button" name="action" value="send" id="sendButton" class="submitSE-button">Send</button>
+                <div class="image-container1 no-images" id="images_container_next">
+                </div>
+            </div>
+			
+            <div class="scroll-container">
+				<button type="button" name="action" value="finish" id="finishButton" class="submitSE-button">Finish</button>
+                <div class="image-container2 no-images" id="images_container_all">
+                </div>
+            </div>
+			
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/jquery-3.7.1.min.js"></script>
+<script>
+    let selectedOption = 'KIS'; // 默认选中KIS
+	let datasets='V3C'
+    let selectedModel='gpt_0'
+    function selectOption(option)
+    {
+        selectedOption = option;
+        document.getElementById('task').value = option;
+
+        const options = document.querySelectorAll('.option');
+        options.forEach((optionElement) => {
+            if (optionElement.textContent === option)
+            {
+                optionElement.classList.add('selected');
+            }
+            else
+            {
+                optionElement.classList.remove('selected');
+            }
+        });
+    }
+
+    $(document).keypress(function(e) {
+        if (e.which == 13) {
+            $("#search").click();
+        }
+    });
+    function selectModel(model) {
+        selectedModel = model;
+        document.getElementById('models').value = model;
+        const models = document.querySelectorAll('.model-switch');
+        models.forEach((modelElement) => {
+            if (modelElement.id === model) {
+                modelElement.classList.add('selectedmodel');
+            } else {
+                modelElement.classList.remove('selectedmodel');
+            }
+        });
+    }
+	function selectDataset(dataset) {
+        selectedDataset = dataset;
+        document.getElementById('datasets').value = dataset;
+
+        const datasets = document.querySelectorAll('.dataset-switch');
+        datasets.forEach((datasetElement) => {
+            if (datasetElement.id === dataset) {
+                datasetElement.classList.add('selectedDataset');
+            } else {
+                datasetElement.classList.remove('selectedDataset');
+            }
+        });
+    }
+	
+	
+    function previewImage(event)
+    {
+        var imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = ''; // Clear the preview
+
+        var files = event.target.files;
+        for (var i = 0, f; f = files[i]; i++)
+        {
+            // Only process image files.
+            if (!f.type.match('image.*')) continue;
+
+            var reader = new FileReader();
+            reader.onload = (function(theFile)
+            {
+                return function(e)
+                {
+                    // Render thumbnail.
+                    var span = document.createElement('span');
+                    span.innerHTML = ['<img class="preview-image" src="', e.target.result,
+                        '" title="', escape(theFile.name), '"/>'].join('');
+                    imagePreview.insertBefore(span, null);
+                };
+            })(f);
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
+        }
+    }
+    function dragOverHandler(event)
+    {
+        event.preventDefault();
+    }
+    // This function is called when a file is dropped onto the drop zone.
+    function dropHandler(event)
+    {
+        event.preventDefault();
+        if (event.dataTransfer.items)
+        {
+            for (var i = 0; i < event.dataTransfer.items.length; i++)
+            {
+                if (event.dataTransfer.items[i].kind === 'file')
+                {
+                    var file = event.dataTransfer.items[i].getAsFile();
+                    document.getElementById('file-upload').files = event.dataTransfer.files;
+                    previewImage({ target: { files: event.dataTransfer.files } });
+                }
+            }
+        }
+    }
+    document.addEventListener('paste', (event) => {
+        var clipboardData = event.clipboardData || window.clipboardData;
+        if (!clipboardData) {
+            return;
+        }
+
+        // 检查是否有图像
+        var items = clipboardData.items;
+        if (items) {
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf("image") !== -1) {
+                    var file = items[i].getAsFile();
+
+                    // 创建一个用于读取图像的 FileReader
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        // 更新 <input type='file'> 的 files 属性
+                        var dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        document.getElementById('file-upload').files = dataTransfer.files;
+
+                        // 显示图像预览
+                        document.getElementById('imagePreview').innerHTML = '<img class="preview-image" src="' + e.target.result + '" alt="Uploaded Image">';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+    });
+
+    $("#search").click(function () {
+        var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+        var formData = new FormData();
+        formData.append('file', $('#file-upload')[0].files[0]);
+        formData.append('task', $("#task").val());
+        formData.append('text', $("#text").val());
+		formData.append('data', $("#datasets").val());
+        formData.append('csrfmiddlewaretoken', csrf_token);
+
+        $.ajax({
+            url: "/search/",
+            type: "POST",
+            data: formData,
+            processData: false,  // 告诉 jQuery 不要处理发送的数据
+            contentType: false,  // 告诉 jQuery 不要设置内容类型
+            beforeSend: function() {
+                // 在发送请求之前显示加载指示器
+                $("#loading").show();
+            },
+            success: function (data)
+            {
+		       $("#loading").hide();
+                var imagesContainer = $("#images_container");
+                imagesContainer.empty();
+                if (data.hasOwnProperty('ans_blip2'))
+                {
+                    // 显示 'ans_blip2' 的值
+                    var ansBlip2Value = $("<div>").text(data.ans_blip2);
+                    imagesContainer.append(ansBlip2Value);
+                }
+                for (var i = 0; i < data.images.length; i++)
+                {
+                	 !function(i){
+	                    var image = data.images[i];
+	                    var imageFeedbackContainer = $("<div>").addClass("image-feedback-container");
+	                    var imageElement = $("<img>").attr({
+												  "src": image,
+												  "alt": "Image",
+												  "class": "clickable-image",
+												  "id": 'image' + i
+												});
+						 //双击时绑定函数
+                         imageElement[0].addEventListener('dblclick',function(){
+                             // alert("显示前后帧");
+                             //displayall(image, 'image'+i);
+                             displaynext(image, 'image'+i);
+                         });
+						 //三击绑定函数
+						 
+	                    imageFeedbackContainer.append(imageElement);
+	                    var feedbackIcons = $("<div>").addClass("feedback-icons");
+	                    var icon = $("<div>").addClass("icon");
+	                    var checkmark = $("<div>").addClass("checkmark").html("&#10004;");
+	                    checkmark[0].addEventListener('click',function(){
+	                    	sendFeedback(image, 'checkmark', 'image'+i);
+	                    });
+
+	                    var cross = $("<div>").addClass("cross").html("&#10006;");
+	                    cross[0].addEventListener('click',function(){
+	                    	sendFeedback(image, 'cross','image'+i);
+	                    });
+	                    icon.append(checkmark, cross);
+	                    feedbackIcons.append(icon);
+	                    imageFeedbackContainer.append(feedbackIcons);
+	                    imagesContainer.append(imageFeedbackContainer);
+                	 }(i);
+                }
+
+                // 绑定mouseover和mouseout事件到动态添加的图片
+                $('.clickable-image').on('mouseover', function(event) {
+                    var that = this;
+                    var timerToShow = setTimeout(function() {
+                        var feedbackIcons = that.nextElementSibling;
+                        feedbackIcons.style.visibility = 'visible';
+                    }, 1000);
+
+                    $(this).data('timerToShow', timerToShow);
+                }).on('mouseout', function() {
+                    var timerToShow = $(this).data('timerToShow');
+                    clearTimeout(timerToShow);
+
+                    var timerToHide = setTimeout(() => {
+                        var feedbackIcons = this.nextElementSibling;
+                        if (feedbackIcons) {
+                            feedbackIcons.style.visibility = 'hidden';
+                        }
+                    }, 1000); // 设置延迟为0.5秒后隐藏图标
+
+                    $(this).data('timerToHide', timerToHide);
+                });
+            }
+        });
+    });
+	
+	
+	
+	
+	let StartTimePath=null;
+	let EndTimePath=null;
+	
+    function displaynext(imageSrc,image_id)
+    {
+        // 切换图片边框颜色和大小
+        var imageElement = document.getElementById(image_id)
+        $(imageElement).toggleClass('highlighted');
+        var imagesContainerNext = $("#images_container_next");
+        // var imagesContainerAll = $("#images_container_all");
+        var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+        $("#loading_message").text("正在加载，请稍候...");
+        $.ajax({
+            url: "/displaynext/",
+            method: "post",
+            data: {
+                'selectedImagePath': imageSrc,
+                'csrfmiddlewaretoken': csrf_token,
+            },
+            beforeSend: function() {
+                // 在发送请求之前显示加载指示器
+                $("#loading").show();
+            },
+            success: function (data)
+            {
+                $("#loading").hide();
+                // var imagesContainer = $("#images_container");
+                imagesContainerNext.empty();
+                for (var i = 0; i < data.nextImages.length; i++)
+                {
+                    !function(i){
+                        var image = data.nextImages[i];
+                        var imageFeedbackContainer = $("<div>").addClass("image-feedback-container");
+	                    var imageElement = $("<img>").attr({
+												  "src": image,
+												  "alt": "Image",
+												  "class": "clickable-image",
+												  "id": 'nextImage' + i,
+												  "mark":null
+												});
+		                imageFeedbackContainer.append(imageElement);
+						
+
+
+                        var feedbackIcons = $("<div>").addClass("feedback-icons");
+                        var icon = $("<div>").addClass("icon");
+                        var Start = $("<div>").addClass("checkmark").html("S");
+                        Start[0].addEventListener('click',function(){
+                           StartTimePath= GetTime(image, 'start', 'nextImage'+i); // 修改1，这里是nextImage
+                        });
+                        var End = $("<div>").addClass("cross").html("E");
+                        End[0].addEventListener('click',function(){
+                           EndTimePath= GetTime(image, 'end','nextImage'+i); // 修改1，这里是nextImage
+                        });
+                        icon.append(Start, End);
+                        feedbackIcons.append(icon);
+                        imageFeedbackContainer.append(feedbackIcons);
+                        imagesContainerNext.append(imageFeedbackContainer);
+                    }(i);
+					
+                }
+				// 绑定mouseover和mouseout事件到动态添加的图片
+                $('.clickable-image').on('mouseover', function(event)
+                {
+                    var that = this;
+                    var timerToShow = setTimeout(function()
+                    {
+                        var feedbackIcons = that.nextElementSibling;
+                        feedbackIcons.style.visibility = 'visible';
+                    }, 1000);
+
+                    $(this).data('timerToShow', timerToShow);
+                }).on('mouseout', function()
+                {
+                    var timerToShow = $(this).data('timerToShow');
+                    clearTimeout(timerToShow);
+
+                    var timerToHide = setTimeout(() =>
+                    {
+                        var feedbackIcons = this.nextElementSibling;
+                        if (feedbackIcons) {
+                            feedbackIcons.style.visibility = 'hidden';
+                        }
+                    }, 1000); // 设置延迟为0.5秒后隐藏图标
+
+                    $(this).data('timerToHide', timerToHide);
+                });
+            }
+        });
+    }
+	
+	let StartfinishPath=null;
+	let EndfinishPath=null;
+	
+    function sendFeedback(imageSrc, iconType,image_id)
+    {
+        $.ajax({
+            url: "/feedback/",
+            method: "post",
+            data: {
+                'selectedImagePath': imageSrc,
+                'iconType': iconType,
+                'task':$("#task").val(),
+                'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val()
+            },
+            success: function(response) {
+//                console.log("success")
+                console.log(image_id)
+                var imageElement = document.getElementById(image_id)
+                $(imageElement).toggleClass('darken-filter');
+                // 添加深色滤镜效果
+            },
+            error: function(xhr, status, error) {
+                // Handle errors here
+                console.error('Error in sending feedback:', error);
+            }
+        });
+    }
+    function GetTime(imageSrc,iconType,image_id)
+    {
+		
+		console.log(image_id);
+		var imageElement = document.getElementById(image_id);
+        var imageTimePath=null;
+		// 检查图片当前的标记状态
+		var currentMark = imageElement.mark;
+
+		// 如果当前状态与点击的动作相同，则取消标记，否则添加或更改标记
+		if (currentMark === iconType)
+        {
+			imageElement.mark=null;
+			imageElement.style.filter='brightness(100%)'; // 恢复原始样式
+		}
+        else
+        {
+			imageTimePath=imageSrc;
+			imageElement.mark=iconType;
+			imageElement.style.filter='brightness(50%)'; // 变暗
+
+ 			$('.clickable-image').each(function(element)
+            {
+				if ((element.id !== image_id)&&(element.mark===imageElement.mark))
+                {
+					element.mark=null;
+					element.style.filter = 'brightness(100%)';
+				}
+			});
+			
+		}
+		return imageTimePath;
+		}
+    
+    $("#rerank").click(function ()
+    {
+        $("#loading_message").text("正在加载，请稍候...");
+        var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+            url:"/rerank/",  // 请求路由, 向search地址发送请求
+            method:"post",     // 请求方式, 可以指定多种请求方式, 这里使用post请求
+            data:{             // 请求携带数据,
+                'task':$("#task").val(),  // 根据标签中的id取值
+                'text':$("#text").val(),
+		       'data':$("#datasets").val(),
+                'image':$("#file-upload").val(),
+                'csrfmiddlewaretoken': csrf_token,
+            },
+            beforeSend: function()
+            {
+                // 在发送请求之前显示加载指示器
+                $("#loading").show();
+            },
+            success: function (data) {
+                $("#loading").hide();
+                var imagesContainer = $("#images_container");
+                imagesContainer.empty();
+                for (var i = 0; i < data.images.length; i++)
+                {
+                	 !function(i){
+	                    var image = data.images[i];
+	                    var imageFeedbackContainer = $("<div>").addClass("image-feedback-container");
+	                    var imageElement = $("<img>").attr({
+												  "src": image,
+												  "alt": "Image",
+												  "class": "clickable-image",
+												  "id": 'image' + i
+												});
+	                    
+                        imageElement[0].addEventListener('dblclick',function(){
+                             // alert("显示前后帧");
+                             //displayall(image, 'image'+i);
+                             displaynext(image, 'image'+i);
+                         });
+	                    imageFeedbackContainer.append(imageElement);
+	                    var feedbackIcons = $("<div>").addClass("feedback-icons");
+	                    var icon = $("<div>").addClass("icon");
+	                    var checkmark = $("<div>").addClass("checkmark").html("&#10004;");
+	                    checkmark[0].addEventListener('click',function(){
+	                    	sendFeedback(image, 'checkmark', 'image'+i);
+	                    });
+	                    
+	                    var cross = $("<div>").addClass("cross").html("&#10006;");
+	                    cross[0].addEventListener('click',function(){
+	                    	sendFeedback(image, 'cross','image'+i);
+	                    });
+	                    
+	                    
+	                    icon.append(checkmark, cross);
+	                    feedbackIcons.append(icon);
+	                    imageFeedbackContainer.append(feedbackIcons);
+	                    imagesContainer.append(imageFeedbackContainer);
+                	 }(i);
+                }
+                // 绑定mouseover和mouseout事件到动态添加的图片
+                $('.clickable-image').on('mouseover', function(event)
+                {
+                    var that = this;
+                    var timerToShow = setTimeout(function() {
+                        var feedbackIcons = that.nextElementSibling;
+                        feedbackIcons.style.visibility = 'visible';
+                    }, 1000);
+
+                    $(this).data('timerToShow', timerToShow);
+                }).on('mouseout', function() {
+                    var timerToShow = $(this).data('timerToShow');
+                    clearTimeout(timerToShow);
+
+                    var timerToHide = setTimeout(() => {
+                        var feedbackIcons = this.nextElementSibling;
+                        if (feedbackIcons) {
+                            feedbackIcons.style.visibility = 'hidden';
+                        }
+                    }, 1000); // 设置延迟为0.5秒后隐藏图标
+
+                    $(this).data('timerToHide', timerToHide);
+                });
+            }
+
+        })
+    });
+    $("#clear").click(function ()
+    {
+        // 使用 confirm 函数显示确认提示框
+        var confirmClear = confirm("确定要清除吗？");
+
+        // 如果用户点击了确认按钮
+        if (confirmClear) {
+            var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+            $.ajax({
+                url: "/clear/",  // 请求路由, 向search地址发送请求
+                method: "post",   // 请求方式, 可以指定多种请求方式, 这里使用post请求
+                data: {           // 请求携带数据,
+                    'csrfmiddlewaretoken': csrf_token,
+                },
+                success: function (data) {   // 成功后执行该函数, 否则不执行
+                    // 可以在成功后执行一些操作
+                }
+            });
+        }
+    });
+    $("#submitconfirm").click(function () {
+        var userInput = prompt("请输入您的文本：");
+
+        // 如果用户输入了文本
+        if (userInput !== null && userInput.trim() !== "") {
+            var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+            $.ajax({
+                url: "/submitconfirm/",  // 请求路由
+                method: "post",   // 请求方式
+                data: {
+                    'csrfmiddlewaretoken': csrf_token,
+                    'userInput': userInput  // 将用户输入作为数据发送
+                },
+                success: function (data) {
+                    // 成功后的操作，例如显示成功消息
+                    alert("提交成功！");
+                },
+                error: function () {
+                    // 错误处理
+                    alert("提交失败，请重试！");
+                }
+            });
+        }
+    });
+
+    $("#update").click(function ()
+    {
+        $("#loading_message").text("正在加载，请稍候...");
+        var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+        var formData = new FormData();
+        // Uncomment or adjust these lines as needed based on your form structure
+        // formData.append('file', $('#file-upload')[0].files[0]);
+        // formData.append('task', $("#task").val());
+        // formData.append('text', $("#text").val());
+        formData.append('csrfmiddlewaretoken', csrf_token);
+        formData.append('model', selectedModel);
+        $.ajax({
+            url: "/gptupdate/",
+            type: "POST",
+            data: formData,
+            processData: false,  // 告诉 jQuery 不要处理发送的数据
+            contentType: false,  // 告诉 jQuery 不要设置内容类型
+            beforeSend: function()
+            {
+                // 在发送请求之前显示加载指示器
+                $("#loading_gpt").show();
+            },
+            success: function (data)
+            {
+                $("#loading_gpt").hide();
+                var qaContainer = $("#qa_container");
+                qaContainer.empty();
+                $.each(data, function(key, value) {
+                    var questionDiv = $('<div>').addClass('question-container');
+                    var questionTitle = $('<div>').addClass('question-title').text(value.Q);
+                    questionDiv.append(questionTitle);
+                    var radioName = 'question' + key;
+                    var yesDiv = $('<div>').addClass('option');
+                    var yesOption = $('<input>').attr({
+                        type: 'radio',
+                        id: radioName + 'Yes',
+                        name: radioName,
+                        value: 'Yes'
+                    });
+                    var yesLabel = $('<label>').attr('for', radioName + 'Yes').text(value.Yes);
+                    yesDiv.append(yesOption).append(yesLabel);
+                    questionDiv.append(yesDiv);
+
+                    var noDiv = $('<div>').addClass('option');
+                    var noOption = $('<input>').attr({
+                        type: 'radio',
+                        id: radioName + 'No',
+                        name: radioName,
+                        value: 'No'
+                    });
+                    var noLabel = $('<label>').attr('for', radioName + 'No').text(value.No);
+                    noDiv.append(noOption).append(noLabel);
+                    questionDiv.append(noDiv);
+
+                    qaContainer.append(questionDiv);
+                });
+            }
+        });
+    });
+    $("#submit").click(function ()
+    {
+        var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+        var answers = [];
+        var formData = new FormData();
+        var allAnswered = true;
+        $(".question-container").each(function()
+        {
+            var checkedRadio = $(this).find("input[type='radio']:checked");
+            if (checkedRadio.length === 0) {
+                allAnswered = false;
+                return false; // Break the loop
+            }
+            var answer = checkedRadio.val();
+            // console.log("Answer: ", answer);
+            answers.push(answer === 'Yes' ? 1 : 0);
+        });
+        if (!allAnswered) {
+            alert("Please answer all questions.");
+            return; // Stop the function if not all questions are answered
+        }
+        console.log("Answers being sent: ", answers);
+        // Append the answers array to formData
+        formData.append('answers', JSON.stringify(answers));
+        formData.append('csrfmiddlewaretoken', csrf_token);
+        formData.append('model', selectedModel);
+        $.ajax({
+            url: "/gptsubmit/",
+            type: "POST",
+            data: formData,
+            processData: false,  // Tell jQuery not to process the data
+            contentType: false,  // Tell jQuery not to set contentType
+            beforeSend: function() {
+                // Show loading indicator before sending the request
+                $("#loading_gpt").show();
+            },
+            success: function (data) {
+                $("#loading_gpt").hide();
+                var qaContainer = $("#qa_container");
+                qaContainer.empty();
+                // Handle the response here
+                if (data && data.text) {
+                    var responseText = $('<div>').addClass('response-text').text(data.text);
+                    qaContainer.append(responseText);
+                }
+            }
+        });
+    });
+
+	$("#cutButton").click(function () {
+ 	  $("#loading_message").text("正在加载，请稍候...");
+       var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+       if (StartTimePath && EndTimePath) {
+        $.ajax({
+            url: "/cut/",
+            type: "POST",
+            data: {
+                'startTimePath': StartTimePath,
+                'endTimePath': EndTimePath,
+                'csrfmiddlewaretoken': csrf_token
+            },
+               success: function (data) {
+                $("#loading").hide();
+                var imagesContainerAll = $("#images_container_all");
+                imagesContainerAll.empty();
+                for (var i = 0; i < data.allImages.length; i++) {
+                    !function(i){
+                        var image = data.allImages[i];
+                        var imageFeedbackContainer = $("<div>").addClass("image-feedback-container");
+                        var imageElement = $("<img>").attr({
+                            "src": image,
+                            "alt": "Image",
+                            "class": "clickable-image",
+                            "id": 'allImage' + i,
+							"mark":null
+                        });
+                        imageFeedbackContainer.append(imageElement);
+
+
+						var feedbackIcons = $("<div>").addClass("feedback-icons");
+						var icon = $("<div>").addClass("icon");
+						var addIcon = $("<div>").addClass("checkmark").html("S");
+						addIcon.click(function(){
+							StartfinishPath=GetTime(image, 'addstart', 'allImage' + i);
+						});
+						var deleteIcon = $("<div>").addClass("cross").html("E");
+						deleteIcon.click(function(){
+							EndfinishPath=GetTime(image, 'addend', 'allImage' + i);
+						});
+						icon.append(addIcon, deleteIcon);
+						feedbackIcons.append(icon);
+						imageFeedbackContainer.append(feedbackIcons);
+
+						imagesContainerAll.append(imageFeedbackContainer);
+					}(i);
+					
+					// 绑定mouseover和mouseout事件到动态添加的图片
+                $('.clickable-image').on('mouseover', function(event) {
+                    var that = this;
+                    var timerToShow = setTimeout(function() {
+                        var feedbackIcons = that.nextElementSibling;
+                        feedbackIcons.style.visibility = 'visible';
+                    }, 1000);
+
+                    $(this).data('timerToShow', timerToShow);
+                }).on('mouseout', function() {
+                    var timerToShow = $(this).data('timerToShow');
+                    clearTimeout(timerToShow);
+
+                    var timerToHide = setTimeout(() => {
+                        var feedbackIcons = this.nextElementSibling;
+                        if (feedbackIcons) {
+                            feedbackIcons.style.visibility = 'hidden';
+                        }
+                    }, 1000); // 设置延迟为0.5秒后隐藏图标
+
+                    $(this).data('timerToHide', timerToHide);
+                });
+					
+					
+                }
+
+
+                 // alert("Cut operation successful.");
+            },
+            error: function (xhr, status, error) {
+                console.error('Error in Cut operation:', error);
+            }
+        });
+    } else {
+        alert("Please select both start and end frames before cutting.");
+    }
+});
+
+
+$("#sendButton").click(function() {
+    if (StartTimePath && EndTimePath) {
+        sendStartEndImages(StartTimePath, EndTimePath);
+    } else {
+        alert("请先标记开始和结束的图片。");
+    }
+});
+	
+	//send按钮 将开始和结束时间的图片地址发送
+function sendStartEndImages(startImagePath, endImagePath) {
+    var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+    $.ajax({
+        url: "/send/", 
+        type: "POST",
+        data: {
+            'startImagePath': startImagePath,
+            'endImagePath': endImagePath,
+            'csrfmiddlewaretoken': csrf_token
+        },
+        success: function(response) {
+      
+            console.log("图片处理成功:", response);
+            alert("开始和结束的图片已成功发送到服务器。");
+        },
+        error: function(xhr, status, error) {
+            console.error("处理图片时出错:", error);
+            alert("发送图片时发生错误。");
+        }
+    });
+}
+$("#finishButton").click(function() {
+    if (StartfinishPath && EndfinishPath)
+    {
+        sendStartEndImagesToServer(StartfinishPath, EndfinishPath);
+    }
+    else
+    {
+        alert("请先标记开始和结束的图片。");
+    }
+});
+
+// 将开始和结束时间的图片地址发送到服务器
+function sendStartEndImagesToServer(startImagePath, endImagePath) {
+    var csrf_token = $("[name='csrfmiddlewaretoken']").val();
+    $.ajax({
+        url: "/finish/", 
+        type: "POST",
+        data: {
+            'startImagePath': startImagePath,
+            'endImagePath': endImagePath,
+            'csrfmiddlewaretoken': csrf_token
+        },
+        success: function(response) {
+      
+            console.log("图片处理成功:", response);
+            alert("开始和结束的图片已成功发送到服务器。");
+        },
+        error: function(xhr, status, error) {
+            console.error("处理图片时出错:", error);
+            alert("发送图片时发生错误。");
+        }
+    });
+}
+	
+	
+</script>
+<!--{% if task %}-->
+<!--   <script>selectOption('{{ task }}');</script>-->
+<!--{% endif %}-->
+</body>
+</html>
